@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"log"
 	"os"
 )
@@ -25,7 +26,46 @@ func changePermission(filename string, mode os.FileMode) {
 		log.Fatal(err)
 	}
 }
+func createFile() {
+	file, err := os.OpenFile("muhammed.txt", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0644)
+	fmt.Println(os.O_WRONLY | os.O_APPEND | os.O_CREATE)
+
+	if err != nil {
+		panic(err)
+	}
+	file.WriteString("Muhammed ikbal\n")
+	defer file.Close()
+}
+func copyImage() {
+	fileStat, err := os.Stat("golang.png")
+	if err != nil {
+		panic(err)
+	}
+	bufferSize := fileStat.Size()
+	fileToCopy, err := os.Open("golang.png")
+	if err != nil {
+		panic(err)
+	}
+	buffer := make([]byte, bufferSize)
+
+	n, err := fileToCopy.Read(buffer)
+	if err != nil {
+		panic(err)
+	}
+
+	file, err := os.OpenFile("copy.png", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0644)
+	defer file.Close()
+	if err != nil {
+		panic(err)
+	}
+	s, err := file.Write(buffer[:n])
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("buffer size is %d\n", s)
+
+}
+
 func main() {
-	mode := os.FileMode(0777)
-	changePermission("test.txt", mode)
+	copyImage()
 }
